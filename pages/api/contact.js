@@ -27,7 +27,7 @@ async function handler(req, res) {
     // save in db
     try {
       client = await MongoClient.connect(
-        "mongodb+srv://harsh_arora:iBk8oP6RjVv1O34V@cluster0.jfh4zpi.mongodb.net/?retryWrites=true&w=majority"
+        "mongodb+srv://harsh_aror:iBk8oP6RjVv1O34V@cluster0.jfh4zpi.mongodb.net/?retryWrites=true&w=majority"
       );
 
       const db = client.db("blog-messages");
@@ -35,15 +35,15 @@ async function handler(req, res) {
       const meetupsCollection = db.collection("messages");
 
       const result = await meetupsCollection.insertOne(newMessage);
-      client.close();
+      
     } catch (error) {
-        client.close();
-        res.status(500).json({message:'Could not save query.'+ error.message});
+        if(client)client.close();
+        res.status(500).json({message:'Could not save query.'});
         return;
     }
 
     // console.log(result);
-
+    client.close();
     
     res
       .status(201)
