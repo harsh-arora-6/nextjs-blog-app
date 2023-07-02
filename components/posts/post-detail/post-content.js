@@ -1,8 +1,9 @@
-import ReactMarkdown from 'react-markdown';
-import Image from 'next/image';
-
-import PostHeader from './post-header';
-import classes from './post-content.module.css';
+import ReactMarkdown from "react-markdown";
+import Image from "next/image";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import PostHeader from "./post-header";
+import classes from "./post-content.module.css";
 
 function PostContent(props) {
   const { post } = props;
@@ -20,10 +21,12 @@ function PostContent(props) {
     //     />
     //   );
     // },
+    // done this to remove warning of div as inside of <p> because markdown is translated to HTML such that contents other than title,list etc is rendered as para
+    // so here our Image is inside <p>
     paragraph(paragraph) {
       const { node } = paragraph;
 
-      if (node.children[0].type === 'image') {
+      if (node.children[0].type === "image") {
         const image = node.children[0];
 
         return (
@@ -39,6 +42,16 @@ function PostContent(props) {
       }
 
       return <p>{paragraph.children}</p>;
+    },
+    code(code) {
+      const { language, value } = code;
+      return (
+        <SyntaxHighlighter
+          style={atomDark}
+          language={language}
+          children={value}
+        />
+      );
     },
   };
 
