@@ -13,7 +13,7 @@ function handler(req, res) {
       email.trim() === "" ||
       message.trim() === ""
     ) {
-      res.status(422).json({ message: "Invalid Entries" });
+      res.status(422).json({ message: "Invalid Input" });
       return;
     }
 
