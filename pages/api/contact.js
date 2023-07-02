@@ -1,4 +1,5 @@
-function handler(req, res) {
+import { MongoClient } from "mongodb";
+async function handler(req, res) {
   if (req.method === "POST") {
     // nextjs does the json parsing for us.
     const { name, email, message } = req.body;
@@ -22,9 +23,31 @@ function handler(req, res) {
       email,
       message,
     };
+    let client;
     // save in db
-    console.log(newMessage);
-    res.status(201).json({ message: "Data Saved Successfully." ,messageObj:newMessage});
+    try {
+      client = await MongoClient.connect(
+        "mongodb+srv://harsh_arora:iBk8oP6RjVv1O34V@cluster0.jfh4zpi.mongodb.net/?retryWrites=true&w=majority"
+      );
+
+      const db = client.db("blog-messages");
+
+      const meetupsCollection = db.collection("messages");
+
+      const result = await meetupsCollection.insertOne(newMessage);
+      client.close();
+    } catch (error) {
+        client.close();
+        res.status(500).json({message:'Could not save query.'+ error.message});
+        return;
+    }
+
+    // console.log(result);
+
+    
+    res
+      .status(201)
+      .json({ message: "Data Saved Successfully.", messageObj: newMessage });
   }
 }
 export default handler;
